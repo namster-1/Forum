@@ -1,0 +1,262 @@
+.page {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding: 40px 0 80px;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Page header */
+.pageHeader {
+  margin-bottom: 32px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Fields */
+.field {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.required {
+  color: #E24B4A;
+  margin-left: 3px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+/* Input */
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: #185FA5;
+  background: #fff;
+}
+
+.inputError {
+  border-color: #E24B4A !important;
+}
+
+.inputFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  min-height: 18px;
+}
+
+.charCount {
+  font-size: 12px;
+  color: #ccc;
+  margin-left: auto;
+}
+
+/* Textarea */
+.textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111;
+  background: #fafafa;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.textarea:focus {
+  border-color: #185FA5;
+  background: #fff;
+}
+
+/* Error */
+.error {
+  font-size: 12px;
+  color: #E24B4A;
+  margin-top: 6px;
+  display: block;
+}
+
+/* Category grid */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.catBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  text-align: left;
+}
+
+.catBtn:hover {
+  border-color: #185FA5;
+  color: #185FA5;
+  background: #f0f5fb;
+}
+
+.catBtnActive {
+  border-color: #185FA5;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-weight: 500;
+}
+
+.catIcon {
+  font-size: 15px;
+}
+
+/* Tags */
+.tagInputWrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  min-height: 42px;
+  cursor: text;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: #E6F1FB;
+  color: #0C447C;
+  font-weight: 500;
+}
+
+.tagRemove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0C447C;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.tagRemove:hover {
+  opacity: 1;
+}
+
+.tagInput {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+  color: #111;
+  flex: 1;
+  min-width: 140px;
+  font-family: inherit;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btnOutline {
+  padding: 10px 20px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btnOutline:hover {
+  border-color: #999;
+  background: #f5f5f5;
+}
+
+.btnPrimary {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #185FA5;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover {
+  background: #0C447C;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .categoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

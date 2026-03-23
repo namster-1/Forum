@@ -5,6 +5,12 @@ import HomePage from './Components/Home/HomePage'
 import Footer from './Components/Footer/Footer'
 import ThreadDetail from './Components/ThreadDetail/ThreadDetail'
 import { Routes,Route } from 'react-router-dom'
+import NewThread from './Components/NewThread/NewThread';
+import Categories from './Components/Categories/Categories';
+import Tags from './Components/Tags/Tags';
+import Leaderboard from './Components/Leaderboard/Leaderboard'
+import Login from './Components/Auth/Login'
+import Register from './Components/Auth/Register'
 
 function ComingSoon({ page }) {
   return (
@@ -23,10 +29,12 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/thread/:id" element={<ThreadDetail />} />
-        <Route path="/categories" element={<ComingSoon page="Categories" />} />
-        <Route path="/tags" element={<ComingSoon page="Tags" />} />
-        <Route path="/leaderboard" element={<ComingSoon page="Top Users" />} />
-        <Route path="/new-thread" element={<ComingSoon page="New Thread" />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/tags" element={<Tags />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/new-thread" element={<NewThread />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<ComingSoon page="Page not found" />} />
       </Routes>
       <Footer />

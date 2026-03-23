@@ -1,0 +1,107 @@
+.page {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding: 40px 0 80px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.pageHeader {
+  margin-bottom: 32px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #888;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: #185FA5;
+  box-shadow: 0 2px 12px rgba(24, 95, 165, 0.08);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.icon {
+  font-size: 28px;
+}
+
+.threadCount {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.count_blue   { background: #E6F1FB; color: #0C447C; }
+.count_purple { background: #EEEDFE; color: #3C3489; }
+.count_teal   { background: #E1F5EE; color: #085041; }
+.count_coral  { background: #FAECE7; color: #712B13; }
+.count_amber  { background: #FAEEDA; color: #633806; }
+
+.catName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+}
+
+.catDesc {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.cardFooter {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.browseLink {
+  font-size: 13px;
+  color: #185FA5;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
+  .grid { grid-template-columns: 1fr; }
+}
