@@ -1,4 +1,5 @@
 import styles from './HomePage.module.css';
+import {Link} from 'react-router-dom'
 
 const categories = [
   { icon: '🖥', name: 'Backend', count: '1.2k', href: '/categories/backend' },
@@ -17,11 +18,11 @@ export default function CategoryGrid() {
       <h2 className={styles.sectionTitle}>Categories</h2>
       <div className={styles.categoryGrid}>
         {categories.map(cat => (
-          <a key={cat.name} href={cat.href} className={styles.catCard}>
+          <Link key={cat.name} href={cat.href} className={styles.catCard}>
             <span className={styles.catIcon}>{cat.icon}</span>
             <span className={styles.catName}>{cat.name}</span>
             <span className={styles.catCount}>{cat.count} threads</span>
-          </a>
+          </Link>
         ))}
       </div>
     </section>

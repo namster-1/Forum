@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -9,10 +10,10 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
 
-        <div className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <span className={styles.logoDot} />
           <span className={styles.logoText}>Forum</span>
-        </div>
+        </Link>
 
         <div className={styles.searchWrap}>
           <svg className={styles.searchIcon} viewBox="0 0 20 20" fill="none">
@@ -29,15 +30,17 @@ export default function Header() {
         </div>
 
         <nav className={styles.nav}>
-          <a className={styles.navLink} href="/">Home</a>
-          <a className={styles.navLink} href="/categories">Categories</a>
-          <a className={styles.navLink} href="/tags">Tags</a>
-          <a className={styles.navLink} href="/leaderboard">Top Users</a>
+          <Link className={styles.navLink} to="/">Home</Link>
+          <Link className={styles.navLink} to="/categories">Categories</Link>
+          <Link className={styles.navLink} to="/tags">Tags</Link>
+          <Link className={styles.navLink} to="/leaderboard">Top Users</Link>
         </nav>
 
         <div className={styles.actions}>
           <button className={styles.btnOutline}>Log in</button>
-          <button className={styles.btnPrimary}>New Thread</button>
+          <Link to="/new-thread">
+            <button className={styles.btnPrimary}>New Thread</button>
+          </Link>
         </div>
 
         <button
@@ -51,10 +54,10 @@ export default function Header() {
 
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          <a href="/">Home</a>
-          <a href="/categories">Categories</a>
-          <a href="/tags">Tags</a>
-          <a href="/leaderboard">Top Users</a>
+          <Link to="/">Home</Link>
+          <Link to="/categories">Categories</Link>
+          <Link to="/tags">Tags</Link>
+          <Link to="/leaderboard">Top Users</Link>
           <div className={styles.mobileBtns}>
             <button className={styles.btnOutline}>Log in</button>
             <button className={styles.btnPrimary}>New Thread</button>

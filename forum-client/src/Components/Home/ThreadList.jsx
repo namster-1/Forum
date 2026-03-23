@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './HomePage.module.css';
+
+const tabs = ['Latest', 'Hot', 'Unanswered', 'My Posts'];
 
 const threads = [
   {
@@ -64,8 +67,6 @@ const threads = [
   },
 ];
 
-const tabs = ['Latest', 'Hot', 'Unanswered', 'My Posts'];
-
 export default function ThreadList() {
   const [activeTab, setActiveTab] = useState('Latest');
 
@@ -88,7 +89,11 @@ export default function ThreadList() {
 
       <div className={styles.threadList}>
         {threads.map(thread => (
-          <a key={thread.id} href={`/thread/${thread.id}`} className={styles.thread}>
+          <Link
+            key={thread.id}
+            to={`/thread/${thread.id}`}
+            className={styles.thread}
+          >
             <div className={`${styles.avatar} ${styles[`avatar_${thread.avatarColor}`]}`}>
               {thread.initials}
             </div>
@@ -112,11 +117,13 @@ export default function ThreadList() {
                 <span className={styles.statLabel}>replies</span>
               </div>
               <div className={styles.stat}>
-                <span className={styles.statNum}>{thread.views >= 1000 ? `${(thread.views / 1000).toFixed(1)}k` : thread.views}</span>
+                <span className={styles.statNum}>
+                  {thread.views >= 1000 ? `${(thread.views / 1000).toFixed(1)}k` : thread.views}
+                </span>
                 <span className={styles.statLabel}>views</span>
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
