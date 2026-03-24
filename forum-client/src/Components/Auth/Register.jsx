@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { registerUser } from '../../services/api';
+import { useAuth } from '../../Context/AuthContext';
 import styles from './Auth.module.css';
 
 export default function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -12,10 +15,12 @@ export default function Register() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const handleChange = (e) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
     setErrors(err => ({ ...err, [e.target.name]: null }));
+    setServerError('');
   };
 
   const validate = () => {
@@ -37,17 +42,28 @@ export default function Register() {
       return;
     }
     setLoading(true);
-    // Later: POST to /api/auth/register
-    setTimeout(() => {
+    try {
+      const data = await registerUser({
+        username: form.username,
+        email: form.email,
+        password: form.password,
+      });
+      if (data.token) {
+        login(data);
+        navigate('/');
+      } else {
+        setServerError(data || 'Registration failed.');
+      }
+    } catch {
+      setServerError('Something went wrong. Please try again.');
+    } finally {
       setLoading(false);
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-
         <div className={styles.cardHeader}>
           <Link to="/" className={styles.logo}>
             <span className={styles.logoDot} />
@@ -58,6 +74,10 @@ export default function Register() {
         </div>
 
         <div className={styles.form}>
+          {serverError && (
+            <div className={styles.serverError}>{serverError}</div>
+          )}
+
           <div className={styles.field}>
             <label className={styles.label}>Username</label>
             <input
@@ -126,7 +146,6 @@ export default function Register() {
             <Link to="/login" className={styles.footerLink}>Log in</Link>
           </p>
         </div>
-
       </div>
     </div>
   );

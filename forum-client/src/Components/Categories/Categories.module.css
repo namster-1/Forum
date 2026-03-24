@@ -98,6 +98,20 @@
   font-weight: 500;
 }
 
+.state {
+  text-align: center;
+  padding: 80px 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.stateError {
+  text-align: center;
+  padding: 80px 0;
+  font-size: 14px;
+  color: #E24B4A;
+}
+
 @media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }

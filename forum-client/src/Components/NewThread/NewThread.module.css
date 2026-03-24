@@ -253,6 +253,15 @@
 .btnPrimary:hover {
   background: #0C447C;
 }
+.serverError {
+  background: #FCEBEB;
+  color: #A32D2D;
+  border: 1px solid #F09595;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
 
 /* Responsive */
 @media (max-width: 600px) {

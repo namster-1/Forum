@@ -1,16 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginUser } from '../../services/api';
+import { useAuth } from '../../Context/AuthContext';
 import styles from './Auth.module.css';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const handleChange = (e) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
     setErrors(err => ({ ...err, [e.target.name]: null }));
+    setServerError('');
   };
 
   const validate = () => {
@@ -27,17 +32,24 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    // Later: POST to /api/auth/login
-    setTimeout(() => {
+    try {
+      const data = await loginUser(form);
+      if (data.token) {
+        login(data);
+        navigate('/');
+      } else {
+        setServerError(data || 'Invalid email or password.');
+      }
+    } catch {
+      setServerError('Something went wrong. Please try again.');
+    } finally {
       setLoading(false);
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-
         <div className={styles.cardHeader}>
           <Link to="/" className={styles.logo}>
             <span className={styles.logoDot} />
@@ -48,6 +60,10 @@ export default function Login() {
         </div>
 
         <div className={styles.form}>
+          {serverError && (
+            <div className={styles.serverError}>{serverError}</div>
+          )}
+
           <div className={styles.field}>
             <label className={styles.label}>Email</label>
             <input
@@ -92,7 +108,6 @@ export default function Login() {
             <Link to="/register" className={styles.footerLink}>Register</Link>
           </p>
         </div>
-
       </div>
     </div>
   );

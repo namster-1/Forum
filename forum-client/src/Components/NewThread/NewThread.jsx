@@ -1,43 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createThread, getCategories } from '../../services/api';
+import { useAuth } from '../../Context/AuthContext'
 import styles from './NewThread.module.css';
-
-const categories = [
-  { id: 1, icon: '🖥', name: 'Backend' },
-  { id: 2, icon: '🎨', name: 'Frontend' },
-  { id: 3, icon: '☁️', name: 'DevOps' },
-  { id: 4, icon: '🔒', name: 'Security' },
-  { id: 5, icon: '🗄', name: 'Databases' },
-  { id: 6, icon: '📱', name: 'Mobile' },
-  { id: 7, icon: '🤖', name: 'AI / ML' },
-  { id: 8, icon: '🧪', name: 'Testing' },
-];
 
 export default function NewThread() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
+  const [categories, setCategories] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+
+  useEffect(() => {
+    if (!user) navigate('/login');
+    getCategories()
+      .then(data => { if (Array.isArray(data)) setCategories(data); });
+  }, [user, navigate]);
 
   const handleAddTag = (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       const newTag = tagInput.trim().toLowerCase();
-      if (!newTag) return;
-      if (tags.length >= 5) return;
-      if (tags.includes(newTag)) return;
+      if (!newTag || tags.length >= 5 || tags.includes(newTag)) return;
       setTags([...tags, newTag]);
       setTagInput('');
     }
   };
 
-  const handleRemoveTag = (tag) => {
-    setTags(tags.filter(t => t !== tag));
-  };
+  const handleRemoveTag = (tag) => setTags(tags.filter(t => t !== tag));
 
   const validate = () => {
     const newErrors = {};
@@ -48,15 +45,28 @@ export default function NewThread() {
     return newErrors;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    // Later this will POST to your .NET API
-    alert('Thread posted! (will connect to API later)');
-    navigate('/');
+    setLoading(true);
+    setServerError('');
+    try {
+      const data = await createThread({
+        title,
+        content,
+        categoryId: selectedCategory,
+        tags,
+      });
+      if (data.id) navigate(`/thread/${data.id}`);
+      else setServerError('Failed to create thread. Please try again.');
+    } catch {
+      setServerError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,11 +78,13 @@ export default function NewThread() {
           <p className={styles.pageSubtitle}>Be specific and clear — good questions get great answers.</p>
         </div>
 
-        {/* Title */}
+        {serverError && (
+          <div className={styles.serverError}>{serverError}</div>
+        )}
+
         <div className={styles.field}>
           <label className={styles.label}>
-            Title
-            <span className={styles.required}>*</span>
+            Title <span className={styles.required}>*</span>
           </label>
           <p className={styles.hint}>Summarize your question in one sentence.</p>
           <input
@@ -92,11 +104,9 @@ export default function NewThread() {
           </div>
         </div>
 
-        {/* Category */}
         <div className={styles.field}>
           <label className={styles.label}>
-            Category
-            <span className={styles.required}>*</span>
+            Category <span className={styles.required}>*</span>
           </label>
           <p className={styles.hint}>Pick the category that best fits your question.</p>
           <div className={styles.categoryGrid}>
@@ -117,11 +127,9 @@ export default function NewThread() {
           {errors.category && <span className={styles.error}>{errors.category}</span>}
         </div>
 
-        {/* Content */}
         <div className={styles.field}>
           <label className={styles.label}>
-            Content
-            <span className={styles.required}>*</span>
+            Content <span className={styles.required}>*</span>
           </label>
           <p className={styles.hint}>Describe your problem in detail. Markdown is supported.</p>
           <textarea
@@ -137,7 +145,6 @@ export default function NewThread() {
           {errors.content && <span className={styles.error}>{errors.content}</span>}
         </div>
 
-        {/* Tags */}
         <div className={styles.field}>
           <label className={styles.label}>Tags</label>
           <p className={styles.hint}>Add up to 5 tags. Press Enter or comma to add.</p>
@@ -145,10 +152,7 @@ export default function NewThread() {
             {tags.map(tag => (
               <span key={tag} className={styles.tag}>
                 {tag}
-                <button
-                  className={styles.tagRemove}
-                  onClick={() => handleRemoveTag(tag)}
-                >×</button>
+                <button className={styles.tagRemove} onClick={() => handleRemoveTag(tag)}>×</button>
               </span>
             ))}
             {tags.length < 5 && (
@@ -164,13 +168,12 @@ export default function NewThread() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className={styles.actions}>
           <button className={styles.btnOutline} onClick={() => navigate('/')}>
             Cancel
           </button>
-          <button className={styles.btnPrimary} onClick={handleSubmit}>
-            Post Thread
+          <button className={styles.btnPrimary} onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Posting...' : 'Post Thread'}
           </button>
         </div>
 

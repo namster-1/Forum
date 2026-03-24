@@ -1,12 +1,22 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../Context/ThemeContext';
+import { useAuth } from '../../Context/AuthContext';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [searchValue, setSearchValue] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+    navigate('/');
+  };
 
   return (
     <header className={styles.header}>
@@ -39,7 +49,6 @@ export default function Header() {
         </nav>
 
         <div className={styles.actions}>
-          {/* Theme toggle */}
           <button className={styles.themeToggle} onClick={toggleTheme} aria-label="Toggle theme">
             {theme === 'light' ? (
               <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
@@ -52,13 +61,53 @@ export default function Header() {
               </svg>
             )}
           </button>
-            <Link to="/login">
-            <button className={styles.btnOutline}>Log in</button>
-            </Link>
-          
-          <Link to="/new-thread">
-            <button className={styles.btnPrimary}>New Thread</button>
-          </Link>
+
+          {user ? (
+            <>
+              <Link to="/new-thread">
+                <button className={styles.btnPrimary}>New Thread</button>
+              </Link>
+              <div className={styles.userMenu}>
+                <button
+                  className={styles.userBtn}
+                  onClick={() => setDropdownOpen(o => !o)}
+                >
+                  <div className={styles.userAvatar}>
+                    {user.username.slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className={styles.userName}>{user.username}</span>
+                  <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <div className={styles.dropdown}>
+                    <div className={styles.dropdownHeader}>
+                      <p className={styles.dropdownName}>{user.username}</p>
+                      <p className={styles.dropdownEmail}>{user.email}</p>
+                    </div>
+                    <div className={styles.dropdownDivider} />
+                    <button className={styles.dropdownItem} onClick={handleLogout}>
+                      <svg viewBox="0 0 20 20" fill="currentColor" width="15" height="15">
+                        <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd"/>
+                      </svg>
+                      Log out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <button className={styles.btnOutline}>Log in</button>
+              </Link>
+              <Link to="/register">
+                <button className={styles.btnPrimary}>Register</button>
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -77,8 +126,14 @@ export default function Header() {
           <Link to="/tags">Tags</Link>
           <Link to="/leaderboard">Top Users</Link>
           <div className={styles.mobileBtns}>
-            <button className={styles.btnOutline}>Log in</button>
-            <button className={styles.btnPrimary}>New Thread</button>
+            {user ? (
+              <button className={styles.btnOutline} onClick={handleLogout}>Log out</button>
+            ) : (
+              <>
+                <Link to="/login"><button className={styles.btnOutline}>Log in</button></Link>
+                <Link to="/register"><button className={styles.btnPrimary}>Register</button></Link>
+              </>
+            )}
           </div>
         </div>
       )}
