@@ -20,51 +20,68 @@ public class ThreadsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? categoryId, [FromQuery] string? tag)
+public async Task<IActionResult> GetAll(
+    [FromQuery] int? categoryId,
+    [FromQuery] string? tag,
+    [FromQuery] string? search,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 20)
+{
+    var query = _context.Threads
+        .Include(t => t.User)
+        .Include(t => t.Category)
+        .Include(t => t.ThreadTags).ThenInclude(tt => tt.Tag)
+        .Include(t => t.Replies)
+        .AsQueryable();
+
+    if (categoryId.HasValue)
+        query = query.Where(t => t.CategoryId == categoryId.Value);
+
+    if (!string.IsNullOrEmpty(tag))
+        query = query.Where(t => t.ThreadTags.Any(tt => tt.Tag.Name == tag));
+
+    if (!string.IsNullOrEmpty(search))
+        query = query.Where(t =>
+            t.Title.ToLower().Contains(search.ToLower()) ||
+            t.Content.ToLower().Contains(search.ToLower()));
+
+    var total = await query.CountAsync();
+
+    var threads = await query
+        .OrderByDescending(t => t.CreatedAt)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(t => new ThreadSummaryDto
+        {
+            Id = t.Id,
+            Title = t.Title,
+            AuthorUsername = t.User.Username,
+            CategoryName = t.Category.Name,
+            IsSolved = t.IsSolved,
+            Views = t.Views,
+            ReplyCount = t.Replies.Count,
+            Tags = t.ThreadTags.Select(tt => tt.Tag.Name).ToList(),
+            CreatedAt = t.CreatedAt
+        })
+        .ToListAsync();
+
+    return Ok(new
     {
-        var query = _context.Threads
-            .Include(t => t.User)
-            .Include(t => t.Category)
-            .Include(t => t.ThreadTags)
-                .ThenInclude(tt => tt.Tag)
-            .Include(t => t.Replies)
-            .AsQueryable();
-
-        if (categoryId.HasValue)
-            query = query.Where(t => t.CategoryId == categoryId.Value);
-
-        if (!string.IsNullOrEmpty(tag))
-            query = query.Where(t => t.ThreadTags.Any(tt => tt.Tag.Name == tag));
-
-        var threads = await query
-            .OrderByDescending(t => t.CreatedAt)
-            .Select(t => new ThreadSummaryDto
-            {
-                Id = t.Id,
-                Title = t.Title,
-                AuthorUsername = t.User.Username,
-                CategoryName = t.Category.Name,
-                IsSolved = t.IsSolved,
-                Views = t.Views,
-                ReplyCount = t.Replies.Count,
-                Tags = t.ThreadTags.Select(tt => tt.Tag.Name).ToList(),
-                CreatedAt = t.CreatedAt
-            })
-            .ToListAsync();
-
-        return Ok(threads);
-    }
-
+        threads,
+        total,
+        page,
+        pageSize,
+        totalPages = (int)Math.Ceiling((double)total / pageSize)
+    });
+}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var thread = await _context.Threads
             .Include(t => t.User)
             .Include(t => t.Category)
-            .Include(t => t.ThreadTags)
-                .ThenInclude(tt => tt.Tag)
-            .Include(t => t.Replies)
-                .ThenInclude(r => r.User)
+            .Include(t => t.ThreadTags).ThenInclude(tt => tt.Tag)
+            .Include(t => t.Replies).ThenInclude(r => r.User)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (thread == null) return NotFound();
@@ -145,9 +162,9 @@ public class ThreadsController : ControllerBase
         if (thread == null) return NotFound();
         if (thread.UserId != userId) return Forbid();
 
-        thread.IsSolved = true;
+        thread.IsSolved = !thread.IsSolved;
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok(new { thread.IsSolved });
     }
 }

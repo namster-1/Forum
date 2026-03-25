@@ -2,6 +2,21 @@
   "version": 3,
   "targets": {
     "net10.0": {
+      "AspNetCoreRateLimit/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.2"
+        },
+        "compile": {
+          "lib/net6.0/AspNetCoreRateLimit.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/AspNetCoreRateLimit.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "BCrypt.Net-Next/4.1.0": {
         "type": "package",
         "compile": {
@@ -639,7 +654,7 @@
       "Newtonsoft.Json/13.0.3": {
         "type": "package",
         "compile": {
-          "lib/net6.0/_._": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
             "related": ".xml"
           }
         },
@@ -892,6 +907,18 @@
     }
   },
   "libraries": {
+    "AspNetCoreRateLimit/5.0.0": {
+      "sha512": "6fq9+o1maGADUmpK/PvcF0DtXW2+7bSkIL7MDIo/agbIHKN8XkMQF4oze60DO731WaQmHmK260hB30FwPzCmEg==",
+      "type": "package",
+      "path": "aspnetcoreratelimit/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "aspnetcoreratelimit.5.0.0.nupkg.sha512",
+        "aspnetcoreratelimit.nuspec",
+        "lib/net6.0/AspNetCoreRateLimit.dll"
+      ]
+    },
     "BCrypt.Net-Next/4.1.0": {
       "sha512": "5YT3DKllmtkyW68PjURu/V1TOe4MKiByKwsRNVcfYE1S5KuFTeozdmKzyNzolKiQF391OXCaQtINvYT3j1ERzQ==",
       "type": "package",
@@ -2963,6 +2990,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "AspNetCoreRateLimit >= 5.0.0",
       "BCrypt.Net-Next >= 4.1.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 10.0.5",
       "Microsoft.AspNetCore.OpenApi >= 10.0.5",
@@ -3015,6 +3043,10 @@
       "net10.0": {
         "targetAlias": "net10.0",
         "dependencies": {
+          "AspNetCoreRateLimit": {
+            "target": "Package",
+            "version": "[5.0.0, )"
+          },
           "BCrypt.Net-Next": {
             "target": "Package",
             "version": "[4.1.0, )"

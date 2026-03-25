@@ -4,9 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using forum_api.Data;
 using forum_api.Services;
+using AspNetCoreRateLimit;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Database
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -53,7 +56,46 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+// Rate limiting
+builder.Services.AddMemoryCache();
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.EnableEndpointRateLimiting = true;
+    options.StackBlockedRequests = false;
+    options.HttpStatusCode = 429;
+    options.GeneralRules = new List<RateLimitRule>
+    {
+        new RateLimitRule
+        {
+            Endpoint = "*",
+            Period = "1m",
+            Limit = 60
+        },
+        new RateLimitRule
+        {
+            Endpoint = "post:/api/auth/*",
+            Period = "5m",
+            Limit = 5
+        }
+    };
+});
+builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddInMemoryRateLimiting();
+
 var app = builder.Build();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
+app.UseIpRateLimiting();
+
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -65,5 +107,14 @@ app.UseCors("AllowReact");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(db);
+}
+
+app.Run();
 
 app.Run();
