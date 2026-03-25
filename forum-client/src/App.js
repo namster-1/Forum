@@ -11,6 +11,11 @@ import Tags from './Components/Tags/Tags';
 import Leaderboard from './Components/Leaderboard/Leaderboard'
 import Login from './Components/Auth/Login'
 import Register from './Components/Auth/Register'
+import CategoryDetail from './Components/Categories/CategoryDetail';
+import SearchPage from './Components/Search/SearchPage'
+import TagDetail from './Components/Tags/TagDetail';
+
+
 
 function ComingSoon({ page }) {
   return (
@@ -35,6 +40,9 @@ function App() {
         <Route path="/new-thread" element={<NewThread />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/categories/:slug" element={<CategoryDetail />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/tags/:slug" element={<TagDetail />} />
         <Route path="*" element={<ComingSoon page="Page not found" />} />
       </Routes>
       <Footer />

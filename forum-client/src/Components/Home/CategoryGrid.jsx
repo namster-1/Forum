@@ -1,27 +1,35 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getCategories } from '../../services/api';
 import styles from './HomePage.module.css';
-import {Link} from 'react-router-dom'
 
-const categories = [
-  { icon: '🖥', name: 'Backend', count: '1.2k', href: '/categories/backend' },
-  { icon: '🎨', name: 'Frontend', count: '987', href: '/categories/frontend' },
-  { icon: '☁️', name: 'DevOps', count: '654', href: '/categories/devops' },
-  { icon: '🔒', name: 'Security', count: '412', href: '/categories/security' },
-  { icon: '🗄', name: 'Databases', count: '538', href: '/categories/databases' },
-  { icon: '📱', name: 'Mobile', count: '321', href: '/categories/mobile' },
-  { icon: '🤖', name: 'AI / ML', count: '290', href: '/categories/ai-ml' },
-  { icon: '🧪', name: 'Testing', count: '178', href: '/categories/testing' },
-];
+const colors = ['blue', 'purple', 'teal', 'coral', 'amber', 'blue', 'purple', 'teal'];
 
 export default function CategoryGrid() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getCategories()
+      .then(data => { if (Array.isArray(data)) setCategories(data); })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className={styles.state}>Loading categories...</div>;
+
   return (
     <section className={styles.categoriesSection}>
       <h2 className={styles.sectionTitle}>Categories</h2>
       <div className={styles.categoryGrid}>
-        {categories.map(cat => (
-          <Link key={cat.name} href={cat.href} className={styles.catCard}>
+        {categories.map((cat, i) => (
+          <Link
+            key={cat.id}
+            to={`/categories/${cat.name.toLowerCase().replace(' / ', '-')}`}
+            className={styles.catCard}
+          >
             <span className={styles.catIcon}>{cat.icon}</span>
             <span className={styles.catName}>{cat.name}</span>
-            <span className={styles.catCount}>{cat.count} threads</span>
+            <span className={styles.catCount}>{cat.threadCount} threads</span>
           </Link>
         ))}
       </div>

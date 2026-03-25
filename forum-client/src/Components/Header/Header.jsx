@@ -18,6 +18,13 @@ export default function Header() {
     navigate('/');
   };
 
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+      setSearchValue('');
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -35,9 +42,10 @@ export default function Header() {
           <input
             className={styles.searchInput}
             type="text"
-            placeholder="Search threads, tags, users..."
+            placeholder="Search threads... (press Enter)"
             value={searchValue}
             onChange={e => setSearchValue(e.target.value)}
+            onKeyDown={handleSearch}
           />
         </div>
 

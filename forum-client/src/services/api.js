@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'http://localhost:5207/api';
 
 const getToken = () => localStorage.getItem('token');
 
@@ -23,8 +23,8 @@ export const loginUser = (data) =>
   }).then(res => res.json());
 
 // Threads
-export const getThreads = () =>
-  fetch(`${BASE_URL}/threads`, {
+export const getThreads = (page = 1, search = '') =>
+  fetch(`${BASE_URL}/threads?page=${page}&pageSize=20&search=${encodeURIComponent(search)}`, {
     headers: headers(),
   }).then(res => res.json());
 
@@ -72,8 +72,21 @@ export const getCategories = () =>
     headers: headers(),
   }).then(res => res.json());
 
+
+export const getThreadsByCategory = (categoryId, page = 1) =>
+  fetch(`${BASE_URL}/threads?categoryId=${categoryId}&page=${page}&pageSize=20`, {
+    headers: headers(),
+  }).then(res => res.json());
+
+
 // Tags
 export const getTags = () =>
   fetch(`${BASE_URL}/tags`, {
     headers: headers(),
   }).then(res => res.json());
+
+  export const getThreadsByTag = (tag, page = 1) =>
+  fetch(`${BASE_URL}/threads?tag=${encodeURIComponent(tag)}&page=${page}&pageSize=20`, {
+    headers: headers(),
+  }).then(res => res.json());
+
